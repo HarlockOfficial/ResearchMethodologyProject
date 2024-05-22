@@ -54,21 +54,8 @@ class ImputationMethod(enum.Enum):
     KNN = lambda dataset: knn_imputation(dataset)
 
 
-def compute_imputation(original_dataset: pd.DataFrame, imputation_methods:list[ImputationMethod] = None) -> list[pd.DataFrame]:
-    """
-    Compute imputation of missing values in the dataset
+def compute_imputation(original_dataset: pd.DataFrame, imputation_method:ImputationMethod = ImputationMethod.MEDIAN):
 
-    Args
-        dataset: pd.DataFrame: input dataset
+    dataset = imputation_method(original_dataset)
 
-    Returns
-        pd.DataFrame: dataset with imputed missing values
-    """
-    if imputation_methods is None:
-        imputation_methods = [ImputationMethod.MEDIAN, ImputationMethod.ITERATIVE, ImputationMethod.KNN]
-    output_datasets = []
-    for imputation_method in imputation_methods:
-        dataset = imputation_method(original_dataset)
-        output_datasets.append(dataset)
-
-    return output_datasets
+    return dataset

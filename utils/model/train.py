@@ -65,12 +65,13 @@ def eval_model(model: nn.Module, df: pd.DataFrame, criterion, target_column_name
         accuracy_list.append(accuracy)
     return sum(loss_list) / len(loss_list), sum(accuracy_list) / len(accuracy_list)
 
-def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: list[pd.DataFrame], epochs:int = 10, batch_size:int = 32, device: str = 'cpu') -> tuple[list[float], list[float], list[float], list[float]]:
+def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: pd.DataFrame, epochs:int = 10, batch_size:int = 32, device: str = 'cpu') -> tuple[list[float], list[float], list[float], list[float]]:
     """
     Train the model.
 
     Args:
         model The model.
+
         dataset_train The training dataset.
         dataset_test The testing dataset.
     """

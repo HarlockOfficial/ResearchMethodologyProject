@@ -42,25 +42,8 @@ class OutlierHandlingMethod(enum.Enum):
     IQR = lambda dataset: iqr_outliers(dataset)
 
 
-def handle_outliers(original_datasets: list[pd.DataFrame], methods: list[OutlierHandlingMethod] = None) -> list[list[pd.DataFrame]]:
-    """
-    Handle outliers in the dataset.
+def handle_outliers(original_dataset: pd.DataFrame, method: OutlierHandlingMethod = OutlierHandlingMethod.IQR):
 
-    Args:
-        original_datasets: list[pd.DataFrame] The dataset to handle outliers.
-        methods: list[OutlierHandlingMethod] The methods to use for handling outliers.
+    ds = method(original_dataset)
 
-    Returns:
-        pd.DataFrame: The dataset with outliers handled.
-    """
-    if methods is None:
-        methods = [OutlierHandlingMethod.ZSCORE, OutlierHandlingMethod.IQR]
-    datasets = []
-
-    for method in methods:
-        datasets.append([])
-        for dataset in original_datasets:
-            ds = method(dataset)
-            datasets[-1].append(ds)
-    # chose best solution
-    return datasets
+    return ds
