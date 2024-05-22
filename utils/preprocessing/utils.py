@@ -8,6 +8,10 @@ def dataset_preprocess(dataset: pd.DataFrame) -> tuple[list, list]:
     dataset_train, dataset_test = split_dataset(dataset, 0.8)
 
     dataset_train = handle_outliers(dataset_train)
+    dataset_test = handle_outliers(dataset_test)
+
     dataset_train = class_balance(dataset_train)
+
     dataset_train = feature_scaling(dataset_train)
+    dataset_test = feature_scaling(dataset_test)
     return dataset_train, dataset_test

@@ -2,7 +2,7 @@ import enum
 
 import pandas as pd
 
-def zscore_outliers(dataset: pd.DataFrame, threshold: float = 3.0) -> tuple[pd.DataFrame, pd.DataFrame]:
+def zscore_outliers(dataset: pd.DataFrame, threshold: float = 3.0) -> pd.DataFrame:
     """
     Handle outliers in the dataset using Z-score.
 
@@ -17,7 +17,7 @@ def zscore_outliers(dataset: pd.DataFrame, threshold: float = 3.0) -> tuple[pd.D
     dataset = (dataset[(z_scores.abs() < threshold).all(axis=1)])
     return dataset
 
-def iqr_outliers(dataset: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+def iqr_outliers(dataset: pd.DataFrame) -> pd.DataFrame:
     """
     Handle outliers in the dataset using IQR.
 

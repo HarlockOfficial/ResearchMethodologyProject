@@ -38,12 +38,15 @@ def load_dataset(dataset_path: str) -> tuple:
                         index += 1
 
         index = 0
-        for df in dataset_test:
-            path = base_path / f'test{index}'
-            if not path.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
-            utils.dataset_serialize(df, str(path))
-            index += 1
+        for dataset_lists_lists in dataset_test:
+            for dataset_lists in dataset_lists_lists:
+                for datasets in dataset_lists:
+                    for df in datasets:
+                        path = base_path / f'test{index}'
+                        if not path.exists():
+                            path.parent.mkdir(parents=True, exist_ok=True)
+                        utils.dataset_serialize(df, str(path))
+                        index += 1
 
     dataset_train = []
     dataset_test = []
@@ -72,7 +75,9 @@ def main(dataset_path: str, selected_model: ModelType, base_model_path:str=None)
                 output_dim=output_dim,
                 hidden_dims=[8, 16, 12, 8, 4],
                 activation='ReLU',
-                dropout=0.0
+                dropout=0.0,
+                n_trees=100,
+                max_depth=None
             )
             utils.model_summary(model)
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
