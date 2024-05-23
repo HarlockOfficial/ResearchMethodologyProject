@@ -27,6 +27,8 @@ def feature_scaling(dataset: list[list[list[pd.DataFrame]]] | list[list[pd.DataF
         for dataset_lists in dataset:
             output_datasets[-1].append([])
             for dataset_list in dataset_lists:
+                if not isinstance(dataset_list, list):
+                    dataset_list = [dataset_list]
                 output_datasets[-1][-1].append([])
                 for ds in dataset_list:
                     columns = ds.columns

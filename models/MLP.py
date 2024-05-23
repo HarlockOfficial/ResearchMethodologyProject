@@ -33,7 +33,9 @@ class MLP(nn.Sequential):
             loss.backward()
             optimizer.step()
             loss_list.append(loss.item())
-            accuracy = (y_pred.argmax() == y).sum().item() / len(y)
+            y_pred[y_pred >= 0.5] = 1
+            y_pred[y_pred < 0.5] = 0
+            accuracy = (y_pred == y).sum().item() / len(y)
             accuracy_list.append(accuracy)
         return sum(loss_list) / len(loss_list), sum(accuracy_list) / len(accuracy_list)
 
@@ -61,6 +63,8 @@ class MLP(nn.Sequential):
             y_pred = y_pred.squeeze()
             loss = criterion(y_pred, y)
             loss_list.append(loss.item())
-            accuracy = (y_pred.argmax() == y).sum().item() / len(y)
+            y_pred[y_pred >= 0.5] = 1
+            y_pred[y_pred < 0.5] = 0
+            accuracy = (y_pred == y).sum().item() / len(y)
             accuracy_list.append(accuracy)
         return sum(loss_list) / len(loss_list), sum(accuracy_list) / len(accuracy_list)

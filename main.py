@@ -38,12 +38,15 @@ def load_dataset(dataset_path: str) -> tuple:
                         index += 1
 
         index = 0
-        for df in dataset_test:
-            path = base_path / f'test{index}'
-            if not path.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
-            utils.dataset_serialize(df, str(path))
-            index += 1
+        for dataset_lists_lists in dataset_test:
+            for dataset_lists in dataset_lists_lists:
+                for datasets in dataset_lists:
+                    for df in datasets:
+                        path = base_path / f'test{index}'
+                        if not path.exists():
+                            path.parent.mkdir(parents=True, exist_ok=True)
+                        utils.dataset_serialize(df, str(path))
+                        index += 1
 
     dataset_train = []
     dataset_test = []
@@ -64,7 +67,7 @@ def main(dataset_path: str, selected_model: ModelType, base_model_path:str=None)
     input_dim = dataset_train[0].shape[1] - 1
     output_dim = 1
 
-    epochs_list = [10, 100, 1000, 2500, 5000, 10000]
+    epochs_list = [100, 1000, 2500, 5000, 10000]
     for epochs in epochs_list:
         for index, df_train in enumerate(dataset_train):
             model = utils.init_model(selected_model,

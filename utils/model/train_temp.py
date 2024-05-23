@@ -90,7 +90,8 @@ def eval_model(model: nn.Module, testing_loader: DataLoader, criterion, device: 
     return last_loss, correct_values_counter / len(testing_loader.dataset)
 
 def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: pd.DataFrame, epochs:int = 10, batch_size:int = 32, device: str = 'cpu'):
-
+    model.to(device)
+    dataset_test = dataset_test[0]
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.functional.binary_cross_entropy
     target_column_name = 'Outcome'

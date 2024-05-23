@@ -31,7 +31,7 @@ def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: pd.DataFr
     test_accuracy = []
     optimizer = None
     if len(list(model.parameters())) > 0:
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.functional.binary_cross_entropy
     for i in range(epochs):
         loss, accuracy = model.fit(df=dataset_train, optimizer=optimizer, criterion=criterion, target_column_name='Outcome', batch_size=batch_size, device=device)
