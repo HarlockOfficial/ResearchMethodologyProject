@@ -2,8 +2,10 @@ import pathlib
 import pickle
 import sys
 
+import pandas as pd
 import torch.cuda
 from matplotlib import pyplot as plt
+from torch import nn
 
 import utils
 from models import ModelType
@@ -79,36 +81,41 @@ def main(dataset_path: str, selected_model: ModelType, base_model_path:str=None)
                 n_trees=100,
                 max_depth=None
             )
-            utils.model_summary(model)
-            device = 'cuda' if torch.cuda.is_available() else 'cpu'
-            train_loss, train_accuracy, test_loss, test_accuracy = utils.model_train(model, df_train, dataset_test, epochs=epochs, batch_size=32, device=device)
-            model_path = base_model_path / f'{epochs}' / f'{index}'
-            if not model_path.exists():
-                model_path.mkdir(parents=True, exist_ok=True)
-            utils.model_save(model, f'{model_path}/model')
+            train_model(df_train, dataset_test, model, base_model_path, epochs)
 
-            # TODO: change following code with functions!
+def train_model(dataset_train: pd.DataFrame, dataset_test: list[pd.DataFrame], model: nn.Module, base_model_path: pathlib.Path, epochs:int):
+    utils.model_summary(model)
 
-            with open(f'{model_path}/train_loss.pkl', 'wb') as f:
-                pickle.dump(train_loss, f)
-            with open(f'{model_path}/train_accuracy.pkl', 'wb') as f:
-                pickle.dump(train_accuracy, f)
-            with open(f'{model_path}/test_loss.pkl', 'wb') as f:
-                pickle.dump(test_loss, f)
-            with open(f'{model_path}/test_accuracy.pkl', 'wb') as f:
-                pickle.dump(test_accuracy, f)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model = model.to(device)
 
-            plt.figure()
-            plt.plot(train_loss, label='train loss')
-            plt.plot(train_accuracy, label='train accuracy')
-            plt.legend()
-            plt.savefig(f'{model_path}/train.png')
+    train_loss, train_accuracy, test_loss, test_accuracy = utils.model_train(model, dataset_train, dataset_test,
+                                                                             epochs=epochs, batch_size=32, device=device)
+    model_path = base_model_path / f'{epochs}'
+    if not model_path.exists():
+        model_path.mkdir(parents=True, exist_ok=True)
+    utils.model_save(model, f'{model_path}/model')
 
-            plt.figure()
-            plt.plot(test_loss, label='test loss')
-            plt.plot(test_accuracy, label='test accuracy')
-            plt.legend()
-            plt.savefig(f'{model_path}/test.png')
+    with open(f'{model_path}/train_loss.pkl', 'wb') as f:
+        pickle.dump(train_loss, f)
+    with open(f'{model_path}/train_accuracy.pkl', 'wb') as f:
+        pickle.dump(train_accuracy, f)
+    with open(f'{model_path}/test_loss.pkl', 'wb') as f:
+        pickle.dump(test_loss, f)
+    with open(f'{model_path}/test_accuracy.pkl', 'wb') as f:
+        pickle.dump(test_accuracy, f)
+
+    plt.figure()
+    plt.plot(train_loss, label='train loss')
+    plt.plot(train_accuracy, label='train accuracy')
+    plt.legend()
+    plt.savefig(f'{model_path}/train.png')
+
+    plt.figure()
+    plt.plot(test_loss, label='test loss')
+    plt.plot(test_accuracy, label='test accuracy')
+    plt.legend()
+    plt.savefig(f'{model_path}/test.png')
 
 
 if __name__ == '__main__':

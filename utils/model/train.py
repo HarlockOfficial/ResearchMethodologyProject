@@ -15,7 +15,7 @@ def eval_model(model: nn.Module, df: pd.DataFrame, criterion, target_column_name
     """
     return model.evaluate(df, criterion, target_column_name, batch_size, device)
 
-def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: pd.DataFrame, epochs:int = 10, batch_size:int = 32, device: str = 'cpu') -> tuple[list[float], list[float], list[float], list[float]]:
+def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: list[pd.DataFrame], epochs:int = 10, batch_size:int = 32, device: str = 'cpu') -> tuple[list[float], list[float], list[float], list[float]]:
     """
     Train the model.
 

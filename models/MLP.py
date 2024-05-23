@@ -1,6 +1,13 @@
+from typing import Iterator
+
 import pandas as pd
 import torch
 import torch.nn as nn
+from sklearn.metrics import classification_report
+from torch.nn import Parameter
+
+from models.AbstractClassifier import AbstractClassifier
+
 
 class MLP(nn.Sequential):
     def __init__(self, *, input_dim:int, output_dim:int, hidden_dims:list[int], activation:str='ReLU', dropout:float=0.0, **kwargs):
@@ -13,7 +20,7 @@ class MLP(nn.Sequential):
                 self.add_module(f'Dropout_{i}', nn.Dropout(dropout))
         self.add_module('Sigmoid', nn.Sigmoid())
 
-    def fit(self,  df: pd.DataFrame, optimizer:torch.optim.Optimizer, criterion, target_column_name:str, batch_size:int = 32, device: str = 'cpu', **kwargs):
+    def fit(self, df: pd.DataFrame, optimizer:torch.optim.Optimizer, criterion, target_column_name:str, batch_size:int = 32, device: str = 'cpu', **kwargs):
         self.train()
         self.to(device).to(torch.float32)
 
@@ -67,4 +74,5 @@ class MLP(nn.Sequential):
             y_pred[y_pred < 0.5] = 0
             accuracy = (y_pred == y).sum().item() / len(y)
             accuracy_list.append(accuracy)
+
         return sum(loss_list) / len(loss_list), sum(accuracy_list) / len(accuracy_list)
