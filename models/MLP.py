@@ -1,12 +1,6 @@
-from typing import Iterator
-
 import pandas as pd
 import torch
 import torch.nn as nn
-from sklearn.metrics import classification_report
-from torch.nn import Parameter
-
-from models.AbstractClassifier import AbstractClassifier
 
 
 class MLP(nn.Sequential):
@@ -35,7 +29,7 @@ class MLP(nn.Sequential):
             y = torch.tensor(y.values).to(device).to(torch.float32)
             optimizer.zero_grad()
             y_pred = self(X)
-            y_pred = y_pred.squeeze()
+            y_pred = y_pred.squeeze(axis=1)
             loss = criterion(y_pred, y)
             loss.backward()
             optimizer.step()
@@ -67,7 +61,7 @@ class MLP(nn.Sequential):
             X = torch.tensor(X.values).to(device).to(torch.float32)
             y = torch.tensor(y.values).to(device).to(torch.float32)
             y_pred = self(X)
-            y_pred = y_pred.squeeze()
+            y_pred = y_pred.squeeze(axis=1)
             loss = criterion(y_pred, y)
             loss_list.append(loss.item())
             y_pred[y_pred >= 0.5] = 1

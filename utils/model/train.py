@@ -38,9 +38,9 @@ def train(model: nn.Module, dataset_train: pd.DataFrame, dataset_test: list[pd.D
         MyLogger().get_logger().info(f"epoch {i+1} loss {loss} accuracy {accuracy}")
         train_loss.append(loss)
         train_accuracy.append(accuracy)
-    for df in dataset_test:
+    for df, df_path in dataset_test:
         loss, accuracy = model.evaluate(df=df, criterion=criterion, target_column_name='Outcome', batch_size=batch_size, device=device)
-        MyLogger().get_logger().info(f"test loss {loss} accuracy {accuracy}")
+        MyLogger().get_logger().info(f"test loss {loss} accuracy {accuracy} for {df_path}")
         test_loss.append(loss)
         test_accuracy.append(accuracy)
 

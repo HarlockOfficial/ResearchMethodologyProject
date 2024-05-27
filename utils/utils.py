@@ -6,3 +6,10 @@ def singleton(class_):
         return instances[class_]
     return getinstance
 
+class FunctionProxy:
+    """Allow to mask a function as an Object."""
+    def __init__(self, function):
+        self.function = function
+
+    def __call__(self, *args, **kwargs):
+        return self.function(*args, **kwargs)

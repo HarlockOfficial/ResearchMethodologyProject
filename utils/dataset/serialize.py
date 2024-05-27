@@ -13,7 +13,7 @@ def serialize_dataset(dataset: pd.DataFrame, file_name: str) -> None:
     """
     if not file_name.endswith(".pkl"):
         file_name = f"{file_name}.pkl"
-    with open (f"{file_name}.pkl", "wb") as f:
+    with open (f"{file_name}", "wb") as f:
         pickle.dump(dataset, f)
 
 def deserialize_dataset(file_name: str) -> pd.DataFrame:

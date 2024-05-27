@@ -4,10 +4,17 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
-class ScalingMethod(enum.Enum):
-    StandardScaler = lambda dataset: StandardScaler().fit_transform(dataset)
+from utils import FunctionProxy
 
-def feature_scaling(dataset: list[list[list[pd.DataFrame]]] | list[list[pd.DataFrame]], methods: list[ScalingMethod] = None) -> list[list[list[list[pd.DataFrame]]]]:
+
+class ScalingMethod(enum.Enum):
+    StandardScaler = FunctionProxy(lambda dataset: StandardScaler().fit_transform(dataset))
+
+    def __call__(self, dataset: pd.DataFrame) -> pd.DataFrame:
+        return self.value(dataset)
+
+
+def feature_scaling(dataset: list[list[tuple[pd.DataFrame, str, str]]], methods: list[ScalingMethod] = None) -> list[list[tuple[pd.DataFrame, str, str]]]:
     """
     Scale the features in the dataset.
 
@@ -22,21 +29,17 @@ def feature_scaling(dataset: list[list[list[pd.DataFrame]]] | list[list[pd.DataF
         methods = [ScalingMethod.StandardScaler]
 
     output_datasets = []
+    assert len(methods) == 1, "Only one scaling method is supported"
     for method in methods:
-        output_datasets.append([])
-        for dataset_lists in dataset:
-            output_datasets[-1].append([])
-            for dataset_list in dataset_lists:
-                if not isinstance(dataset_list, list):
-                    dataset_list = [dataset_list]
-                output_datasets[-1][-1].append([])
-                for ds in dataset_list:
-                    columns = ds.columns
-                    ds_X, ds_y = ds[ds.columns[:-1]], ds[ds.columns[-1]]
-                    ds_X = method(ds_X)
-                    ds_y = ds_y.to_numpy().reshape(-1, 1)
-                    np_arr = np.hstack((ds_X, ds_y))
-                    ds = pd.DataFrame(np_arr, columns=columns)
-                    output_datasets[-1][-1][-1].append(ds)
+        for dataset_list in dataset:
+            output_datasets.append([])
+            for ds, imputation, outliers in dataset_list:
+                columns = ds.columns
+                ds_X, ds_y = ds[ds.columns[:-1]], ds[ds.columns[-1]]
+                ds_X = method(ds_X)
+                ds_y = ds_y.to_numpy().reshape(-1, 1)
+                np_arr = np.hstack((ds_X, ds_y))
+                ds = pd.DataFrame(np_arr, columns=columns)
+                output_datasets[-1].append((ds, imputation, outliers))
 
     return output_datasets

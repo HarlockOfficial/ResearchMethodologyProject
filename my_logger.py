@@ -23,7 +23,7 @@ class MyLogger(object):
             pathlib.Path('./logs').mkdir(parents=True, exist_ok=True)
         time_str = datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
         fh = logging.FileHandler(f'logs/log-{time_str}.log')
-        fh.setLevel(logging.DEBUG)
+        fh.setLevel(logging.NOTSET)
         fh.setFormatter(formatter)
         MyLogger.logger.addHandler(fh)
 
